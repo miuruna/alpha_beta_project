@@ -9,4 +9,7 @@ Pythonを用いStreamlitの画面上でアルゴリズムを視覚的に把握�
 streamlit run app.py
 ```
 
+<img width="1919" height="871" alt="image" src="https://github.com/user-attachments/assets/ada6700b-21e7-46b6-aadb-5561880e81ae" />
+
+
 実装は Gemini3Pro を使用
