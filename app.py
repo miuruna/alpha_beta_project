@@ -13,7 +13,7 @@ st.set_page_config(layout="wide", page_title="Alpha-Beta Visualizer")
 st.title(":material/account_tree: Alpha-Beta Pruning: 相互再帰")
 
 # サイドバー設定
-st.sidebar.header(":park: 木の設定")
+st.sidebar.header(":material/park: 木の設定")
 depth = st.sidebar.slider("木の深さ", 2, 4, 3)
 branching = st.sidebar.slider("分岐数", 2, 3, 2)
 seed = st.sidebar.number_input("乱数シード", value=42)
