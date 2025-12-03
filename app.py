@@ -16,19 +16,55 @@ st.title(":material/account_tree: Alpha-Beta Pruning: 相互再帰")
 st.sidebar.header(":material/park: 木の設定")
 depth = st.sidebar.slider("木の深さ", 2, 4, 3)
 branching = st.sidebar.slider("分岐数", 2, 3, 2)
-seed = st.sidebar.number_input("乱数シード", value=42)
+st.sidebar.markdown("---")
+use_manual_input = st.sidebar.toggle("値を自分で入力する", value=False)
 
-# リセットボタン
-if st.sidebar.button("木を再生成"):
-    seed = random.randint(0, 1000)
+num_leaves = depth ** branching
 
-random.seed(seed)
+if use_manual_input:
+    st.sidebar.caption(f"現在の設定では {num_leaves} 個の数字が必要です")
+    if "input_values" not in st.session_state:
+        defaults = [str(random.randint(1, 99)) for _ in range(num_leaves)]
+        st.session_state.input_values = ",".join(defaults)
+    input_str = st.sidebar.text_area(
+        "葉の値(カンマ区切り)",
+        value=st.session_state.input_values,
+        height=100
+    )
+
+    st.sidebar.button("値を反映")
+    
+    # 入力された文字列を解析してリストにする
+    try:
+        # カンマで区切って数字に変換
+        vals = [int(x.strip()) for x in input_str.split(",") if x.strip()]
+        
+        # 数合わせ（足りなければ0埋め、多ければカット）
+        if len(vals) < num_leaves:
+            st.sidebar.warning(f"数字が {num_leaves - len(vals)} 個足りません（0で埋めます）")
+            vals += [0] * (num_leaves - len(vals))
+        elif len(vals) > num_leaves:
+            vals = vals[:num_leaves]
+            
+        custom_values = vals
+        # 入力内容をセッションに保存（再描画対策）
+        st.session_state.input_values = input_str
+        
+    except ValueError:
+        st.sidebar.error("半角数字とカンマ(,)だけで入力してください")
+else:
+    seed = st.sidebar.number_input("乱数シード", value=42)
+    # 再生成ボタン
+    if st.sidebar.button("値を再抽選"):
+        seed = random.randint(0, 10000)
+    random.seed(seed)
+    custom_values = None
 
 # ==========================================
 # 2. ロジック実行
 # ==========================================
 # 木を作成
-root = create_game_tree(depth, branching)
+root = create_game_tree(depth, branching, values=custom_values)
 
 # ログを記録するリストを用意
 log = []
